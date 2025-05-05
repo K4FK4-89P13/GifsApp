@@ -17,8 +17,18 @@ const loadFromLocalStorage = () => {
 export class GifsService{
     private http = inject(HttpClient);
 
-    trendingGifs = signal<Gif[]>([]);
+    trendingGifs = signal<Gif[]>([]); // [gif, gif, gif, gif]
     trendingGifsLoading = signal(true);
+
+    // [[gif, gif, gif], [gif, gif, gif], [gif, gif, gif]]
+    trendingGifGroup = computed<Gif[][]>(() => {
+        const groups = [];
+        for(let i = 0; i < this.trendingGifs().length; i += 3) {
+            groups.push(this.trendingGifs().slice(i, i+3))
+        }
+
+        return groups; // [[gif1, gif2, gif3], [gif4, gif5, gif6]]
+    })
 
     searchHistory = signal<Record<string, Gif[]>>( loadFromLocalStorage() );
     searchHistoryKeys = computed(() => Object.keys(this.searchHistory()));
@@ -42,7 +52,6 @@ export class GifsService{
             const gifs = GifMapper.mapGiphyItemsToGifArray(resp.data);
             this.trendingGifs.set(gifs);
             this.trendingGifsLoading.set(false);
-            console.log({gifs})
         })
     }
 
