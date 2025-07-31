@@ -25,8 +25,10 @@ export default class TrendingPageComponent {
 
     // console.log({scrollTop, clientHeight});
     const isABottom = scrollTop + clientHeight + 300 >= scrollHeight;
-    console.log({isABottom});
+    //console.log({isABottom});
     
-        
+    if (isABottom) {
+      this.gifService.loadTrendingGifs();
+    }    
   }
 }
